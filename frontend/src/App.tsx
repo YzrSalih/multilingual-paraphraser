@@ -43,60 +43,45 @@ function App() {
   const theme = createTheme({
     palette: {
       mode: darkMode ? 'dark' : 'light',
-      primary: {
-        main: '#6366f1', // Indigo
-      },
-      secondary: {
-        main: '#8b5cf6', // Purple
-      },
+      primary: { main: '#0ea5e9' }, // cyan
+      secondary: { main: '#7c3aed' }, // violet
       background: {
-        default: darkMode ? '#0f172a' : '#fafafa',
-        paper: darkMode ? '#1e293b' : '#ffffff',
+        default: darkMode ? '#0b1220' : '#f6f7fb',
+        paper: darkMode ? '#0f172a' : '#ffffff',
       },
     },
     typography: {
-      fontFamily: '"Poppins", "Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-      h3: {
-        fontWeight: 800,
-        letterSpacing: '-0.5px',
-      },
-      h4: {
-        fontWeight: 700,
-        letterSpacing: '-0.3px',
-      },
-      h5: {
-        fontWeight: 700,
-      },
-      h6: {
-        fontWeight: 600,
-      },
+      fontFamily: '"Inter", "Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
+      h2: { fontWeight: 800, letterSpacing: '-0.6px' },
+      h3: { fontWeight: 800, letterSpacing: '-0.5px' },
+      h4: { fontWeight: 700 },
+      h5: { fontWeight: 700 },
+      h6: { fontWeight: 600 },
+      button: { textTransform: 'none', fontWeight: 700 },
     },
-    shape: {
-      borderRadius: 12,
-    },
+    shape: { borderRadius: 14 },
     components: {
       MuiPaper: {
         styleOverrides: {
           root: {
             backgroundImage: 'none',
-          },
-        },
-      },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-            fontWeight: 600,
-            fontSize: '1rem',
-            borderRadius: '10px',
-            padding: '10px 24px',
+            border: '1px solid rgba(0,0,0,0.06)',
           },
         },
       },
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: '12px',
+            border: '1px solid rgba(0,0,0,0.06)',
+            transition: 'all .25s ease',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+            padding: '10px 20px',
           },
         },
       },
@@ -153,8 +138,7 @@ function App() {
           sx={{
             flexGrow: 1,
             p: currentPage === 'home' ? 0 : 4,
-            pt: 8, // offset for fixed navbar height
-            ml: '200px',
+            pt: 8,
             bgcolor: 'background.default',
           }}
         >

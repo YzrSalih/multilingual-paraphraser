@@ -12,6 +12,7 @@ import {
   Chip,
   Fade,
   Zoom,
+  Stack,
 } from '@mui/material';
 import {
   AutoAwesome,
@@ -27,9 +28,6 @@ import {
   BookmarkBorderOutlined,
   AutoGraphOutlined,
   ArrowForward,
-  TrendingUp,
-  Security,
-  Speed,
 } from '@mui/icons-material';
 
 interface HomeProps {
@@ -39,48 +37,12 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onNavigate, userName }) => {
   const tools = [
-    {
-      id: 'paraphraser',
-      title: 'Text Rewriter',
-      description: 'Increase fluency',
-      icon: <EditNote />,
-      color: '#6366f1',
-    },
-    {
-      id: 'grammar',
-      title: 'Grammar Checker',
-      description: 'Fix mistakes',
-      icon: <CheckCircleOutline />,
-      color: '#10b981',
-    },
-    {
-      id: 'plagiarism',
-      title: 'Plagiarism Checker',
-      description: 'Prevent plagiarism',
-      icon: <FindInPage />,
-      color: '#f59e0b',
-    },
-    {
-      id: 'ai-detector',
-      title: 'AI Detector',
-      description: 'Analyze text',
-      icon: <SmartToy />,
-      color: '#06b6d4',
-    },
-    {
-      id: 'humanizer',
-      title: 'AI Humanizer',
-      description: 'Humanize text',
-      icon: <PersonOutline />,
-      color: '#8b5cf6',
-    },
-    {
-      id: 'chat',
-      title: 'AI Assistant',
-      description: 'Chat with AI',
-      icon: <ForumOutlined />,
-      color: '#0ea5e9',
-    },
+    { id: 'paraphraser', title: 'Text Rewriter', description: 'Increase fluency', icon: <EditNote />, color: '#0ea5e9' },
+    { id: 'grammar', title: 'Grammar Checker', description: 'Fix mistakes', icon: <CheckCircleOutline />, color: '#10b981' },
+    { id: 'plagiarism', title: 'Plagiarism Checker', description: 'Prevent plagiarism', icon: <FindInPage />, color: '#f59e0b' },
+    { id: 'ai-detector', title: 'AI Detector', description: 'Analyze text', icon: <SmartToy />, color: '#7c3aed' },
+    { id: 'humanizer', title: 'AI Humanizer', description: 'Humanize text', icon: <PersonOutline />, color: '#8b5cf6' },
+    { id: 'chat', title: 'AI Assistant', description: 'Chat with AI', icon: <ForumOutlined />, color: '#0ea5e9' },
   ];
 
   const moreTools = [
@@ -95,317 +57,186 @@ const Home: React.FC<HomeProps> = ({ onNavigate, userName }) => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-      {/* Hero Section */}
+      {/* Modern Hero */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-          pt: 8,
-          pb: 8, // reduced to balance the purple area height
           position: 'relative',
           overflow: 'hidden',
+          py: { xs: 6, md: 10 },
+          background: 'radial-gradient(1200px 400px at -10% -20%, rgba(14,165,233,0.18) 0%, rgba(124,58,237,0.10) 35%, rgba(255,255,255,0) 70%)',
         }}
       >
-        {/* Decorative Elements */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '320px', // reduced for balance
-            height: '320px',
-            background: 'rgba(255, 255, 255, 0.12)',
-            borderRadius: '50%',
-            transform: 'translate(50%, -50%)',
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '240px', // reduced for balance
-            height: '240px',
-            background: 'rgba(255, 255, 255, 0.12)',
-            borderRadius: '50%',
-            transform: 'translate(-30%, 30%)',
-          }}
-        />
-
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Fade in timeout={800}>
-            <Box textAlign="center">
-              <Chip
-                icon={<AutoAwesome />}
-                label="Works everywhere"
-                sx={{
-                  mb: 3,
-                  bgcolor: 'rgba(255, 255, 255, 0.22)',
-                  color: 'white',
-                  fontWeight: 600,
-                  backdropFilter: 'blur(10px)',
-                }}
-              />
-
-              <Typography
-                variant="h2"
-                sx={{
-                  color: 'white',
-                  fontWeight: 800,
-                  mb: 3,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                }}
-              >
-                Write better everywhere
-              </Typography>
-
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<AutoAwesome />}
-                onClick={() => onNavigate('humanizer')}
-                sx={{
-                  bgcolor: 'white',
-                  color: '#6366f1',
-                  fontWeight: 700,
-                  fontSize: '1.1rem',
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: '50px',
-                  boxShadow: 6,
-                  '&:hover': {
-                    bgcolor: 'rgba(255, 255, 255, 0.95)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: 12,
-                  },
-                  transition: 'all 0.3s',
-                }}
-              >
-                Get Started - It's free!
-              </Button>
-
-              {/* Decorative Robot Illustration Placeholder */}
-              <Box
-                sx={{
-                  mt: 4,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Avatar
-                  sx={{
-                    width: 150,
-                    height: 150,
-                    bgcolor: 'rgba(255, 255, 255, 0.22)',
-                    backdropFilter: 'blur(10px)',
-                  }}
-                >
-                  <SmartToy sx={{ fontSize: 80, color: 'white' }} />
-                </Avatar>
-              </Box>
-            </Box>
-          </Fade>
-        </Container>
-      </Box>
-
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ mt: -4, pb: 8, position: 'relative', zIndex: 2 }}>
-        <Fade in timeout={1000}>
-          <Box mb={6}>
-            <Typography
-              variant="h4"
-              textAlign="center"
-              gutterBottom
-              sx={{ fontWeight: 700, mb: 1 }}
-            >
-              Hi <span style={{ color: '#6366f1' }}>{nameToShow}</span>, continue working with
-              popular writing tools
-            </Typography>
-          </Box>
-        </Fade>
-
-        {/* Main Tools Grid */}
-        <Grid container spacing={3} mb={4}>
-          {tools.map((tool, index) => (
-            <Grid item xs={12} sm={6} md={4} key={tool.id}>
-              <Zoom in timeout={800 + index * 100}>
-                <Card
-                  onClick={() => onNavigate(tool.id)}
-                  sx={{
-                    height: '100%',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: 8,
-                    },
-                  }}
-                >
-                  <CardContent>
-                    <Box display="flex" alignItems="center" mb={2}>
-                      <Avatar
-                        sx={{
-                          bgcolor: tool.color,
-                          mr: 2,
-                          width: 48,
-                          height: 48,
-                        }}
-                      >
-                        {tool.icon}
-                      </Avatar>
-                      <Box flexGrow={1}>
-                        <Typography variant="h6" fontWeight={700}>
-                          {tool.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {tool.description}
-                        </Typography>
-                      </Box>
-                      <ArrowForward sx={{ color: 'text.secondary' }} />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Zoom>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={7}>
+              <Fade in timeout={600}>
+                <Box>
+                  <Chip
+                    icon={<AutoAwesome />}
+                    label={`Welcome, ${nameToShow}`}
+                    sx={{ mb: 2, bgcolor: 'rgba(14,165,233,0.12)', color: 'primary.main', fontWeight: 700 }}
+                  />
+                  <Typography variant="h2" sx={{ fontWeight: 800, mb: 2 }}>
+                    Write better, faster with CoWrite
+                  </Typography>
+                  <Typography variant="h6" color="text.secondary" sx={{ mb: 3 }}>
+                    Paraphrase, humanize, and perfect your writing across languages with powerful AI tools.
+                  </Typography>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<AutoAwesome />}
+                      onClick={() => onNavigate('humanizer')}
+                    >
+                      Start humanizing
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      endIcon={<ArrowForward />}
+                      onClick={() => onNavigate('paraphraser')}
+                    >
+                      Explore tools
+                    </Button>
+                  </Stack>
+                </Box>
+              </Fade>
             </Grid>
-          ))}
-        </Grid>
-
-        {/* More Tools Section */}
-        <Box textAlign="center" mb={4}>
-          <Button
-            variant="text"
-            endIcon={<ArrowForward />}
-            sx={{ fontWeight: 600, color: 'primary.main' }}
-          >
-            View more tools
-          </Button>
-        </Box>
-
-        <Grid container spacing={2} mb={6}>
-          {moreTools.map((tool, index) => (
-            <Grid item xs={6} sm={4} md={2.4} key={tool.id}>
-              <Zoom in timeout={1200 + index * 100}>
-                <Paper
-                  onClick={() => onNavigate(tool.id)}
-                  sx={{
-                    p: 2,
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 4,
-                    },
-                  }}
-                >
-                  <Avatar
+            <Grid item xs={12} md={5}>
+              <Zoom in timeout={700}>
+                <Paper elevation={8} sx={{ p: 3, borderRadius: 3 }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Preview
+                  </Typography>
+                  <Card
+                    elevation={0}
                     sx={{
-                      bgcolor: 'primary.main',
-                      mx: 'auto',
-                      mb: 1,
-                      width: 40,
-                      height: 40,
+                      borderRadius: 3,
+                      p: 2,
+                      border: '1px solid rgba(14,165,233,0.25)',
+                      background: 'linear-gradient(180deg, rgba(14,165,233,0.06), rgba(124,58,237,0.06))',
                     }}
                   >
-                    {tool.icon}
-                  </Avatar>
-                  <Typography variant="caption" fontWeight={600}>
-                    {tool.title}
-                  </Typography>
+                    <CardContent>
+                      <Box display="flex" alignItems="center" mb={2}>
+                        <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}><PersonOutline /></Avatar>
+                        <Box>
+                          <Typography fontWeight={700}>AI Humanizer</Typography>
+                          <Typography variant="body2" color="text.secondary">Natural, citation-safe rewrites</Typography>
+                        </Box>
+                      </Box>
+                      <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, mb: 1 }}>
+                        "In recent years, AI has significantly transformed..."
+                      </Paper>
+                      <ArrowForward sx={{ color: 'text.secondary', mx: 1 }} />
+                      <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, mt: 1 }}>
+                        In recent years, artificial intelligence has reshaped...
+                      </Paper>
+                    </CardContent>
+                  </Card>
                 </Paper>
               </Zoom>
             </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Quick Actions */}
+      <Container maxWidth="lg" sx={{ mt: 6 }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 4 }}>
+          <Button onClick={() => onNavigate('paraphraser')} variant="outlined" startIcon={<EditNote />}>Paraphrase</Button>
+          <Button onClick={() => onNavigate('grammar')} variant="outlined" startIcon={<CheckCircleOutline />}>Grammar</Button>
+          <Button onClick={() => onNavigate('ai-detector')} variant="outlined" startIcon={<SmartToy />}>AI Detect</Button>
+          <Button onClick={() => onNavigate('plagiarism')} variant="outlined" startIcon={<FindInPage />}>Plagiarism</Button>
+        </Stack>
+
+        {/* Tools Grid */}
+        <Grid container spacing={3} mb={4}>
+          {tools.map((tool, index) => (
+            <Grid item xs={12} sm={6} md={4} key={tool.id}>
+              <Card
+                onClick={() => onNavigate(tool.id)}
+                elevation={0}
+                sx={{
+                  height: '100%',
+                  cursor: 'pointer',
+                  p: 1,
+                  borderRadius: 3,
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.7), rgba(246,247,251,0.9))',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  '&:hover': { transform: 'translateY(-6px)', boxShadow: 8 },
+                }}
+              >
+                <CardContent>
+                  <Box display="flex" alignItems="center" mb={1.5}>
+                    <Avatar sx={{ bgcolor: tool.color, mr: 1.5, width: 44, height: 44 }}>
+                      {tool.icon}
+                    </Avatar>
+                    <Box flexGrow={1}>
+                      <Typography variant="h6" fontWeight={700}>{tool.title}</Typography>
+                      <Typography variant="body2" color="text.secondary">{tool.description}</Typography>
+                    </Box>
+                    <ArrowForward sx={{ color: 'text.secondary' }} />
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
         </Grid>
 
-        {/* Premium Section */}
-        <Zoom in timeout={1500}>
+        {/* More Tools */}
+        <Grid container spacing={2} mb={8}>
+          {moreTools.map((tool, index) => (
+            <Grid item xs={6} sm={4} md={2.4} key={tool.id}>
+              <Paper
+                onClick={() => onNavigate(tool.id)}
+                elevation={0}
+                sx={{
+                  p: 2,
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  borderRadius: 3,
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  '&:hover': { boxShadow: 4 },
+                }}
+              >
+                <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', mb: 1, width: 40, height: 40 }}>
+                  {tool.icon}
+                </Avatar>
+                <Typography variant="caption" fontWeight={600}>{tool.title}</Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* Premium CTA */}
+      <Container maxWidth="lg" sx={{ pb: 8 }}>
+        <Zoom in timeout={800}>
           <Paper
             elevation={8}
             sx={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-              p: 6,
+              p: { xs: 4, md: 6 },
               borderRadius: 4,
+              background: 'linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%)',
               color: 'white',
               textAlign: 'center',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
-            {/* Decorative Element */}
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                width: '300px',
-                height: '300px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '50%',
-                transform: 'translate(30%, 30%)',
-              }}
-            />
-
             <Box position="relative" zIndex={1}>
               <Typography variant="h3" fontWeight={800} gutterBottom>
-                Power up with Premium
+                Go Premium
               </Typography>
-              <Typography variant="h6" sx={{ mb: 4, opacity: 0.95 }}>
-                Unlock 8+ paraphrasing modes, unlimited inputs, advanced rewrites, and much more.
+              <Typography variant="h6" sx={{ mb: 3, opacity: 0.95 }}>
+                Unlock unlimited rewrites, advanced modes, and priority speed.
               </Typography>
-
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => onNavigate('premium')}
-                startIcon={<AutoAwesome />}
-                sx={{
-                  bgcolor: 'white',
-                  color: '#6366f1',
-                  fontWeight: 700,
-                  fontSize: '1.1rem',
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: '50px',
-                  boxShadow: 6,
-                  '&:hover': {
-                    bgcolor: 'rgba(255, 255, 255, 0.95)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: 12,
-                  },
-                  transition: 'all 0.3s',
-                }}
-              >
-                Get Premium
+              <Button variant="contained" size="large" onClick={() => onNavigate('premium')} sx={{ bgcolor: 'white', color: '#0ea5e9', fontWeight: 800 }}>
+                Upgrade now
               </Button>
-
-              {/* Features */}
-              <Grid container spacing={4} mt={4} justifyContent="center">
-                <Grid item xs={12} sm={4}>
-                  <Box>
-                    <TrendingUp sx={{ fontSize: 48, mb: 1 }} />
-                    <Typography variant="h6" fontWeight={700}>
-                      Unlimited Rewrites
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box>
-                    <Speed sx={{ fontSize: 48, mb: 1 }} />
-                    <Typography variant="h6" fontWeight={700}>
-                      Lightning Fast
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box>
-                    <Security sx={{ fontSize: 48, mb: 1 }} />
-                    <Typography variant="h6" fontWeight={700}>
-                      100% Secure
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
             </Box>
           </Paper>
         </Zoom>
