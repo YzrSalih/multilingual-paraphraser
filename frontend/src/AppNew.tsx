@@ -25,35 +25,30 @@ function App() {
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {
-        main: '#6366f1', // Indigo
+        main: '#10b981',
       },
       secondary: {
-        main: '#8b5cf6', // Purple
+        main: '#ec4899',
       },
       background: {
-        default: darkMode ? '#0f172a' : '#fafafa',
+        default: darkMode ? '#0f172a' : '#f8fafc',
         paper: darkMode ? '#1e293b' : '#ffffff',
       },
     },
     typography: {
-      fontFamily: '"Poppins", "Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
       h3: {
         fontWeight: 800,
-        letterSpacing: '-0.5px',
       },
       h4: {
         fontWeight: 700,
-        letterSpacing: '-0.3px',
       },
       h5: {
         fontWeight: 700,
       },
-      h6: {
-        fontWeight: 600,
-      },
     },
     shape: {
-      borderRadius: 12,
+      borderRadius: 16,
     },
     components: {
       MuiPaper: {
@@ -69,15 +64,6 @@ function App() {
             textTransform: 'none',
             fontWeight: 600,
             fontSize: '1rem',
-            borderRadius: '10px',
-            padding: '10px 24px',
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: '12px',
           },
         },
       },

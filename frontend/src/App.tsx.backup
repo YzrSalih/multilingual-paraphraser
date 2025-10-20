@@ -1,0 +1,766 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Switch,
+  FormControlLabel,
+  Alert,
+  CircularProgress,
+  Chip,
+  ThemeProvider,
+  createTheme,
+  CssBaseline,
+  IconButton,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
+  Fade,
+  Slide,
+  Zoom,
+  Tooltip,
+  Divider,
+  Avatar,
+  Badge
+} from '@mui/material';
+import {
+  Psychology,
+  AutoFixHigh,
+  Analytics,
+  School,
+  Language,
+  Brightness4,
+  Brightness7,
+  AccountTree,
+  CheckCircle,
+  TrendingUp,
+  ContentCopy,
+  Download,
+  Timeline,
+  LightbulbOutlined,
+  SpeedOutlined,
+  VerifiedUser
+} from '@mui/icons-material';
+import axios from 'axios';
+import './App.css';
+
+interface AIDetectionResult {
+  ai_probability: number;
+  confidence: number;
+  analysis: string;
+  flagged_sentences: string[];
+}
+
+interface HumanizedResult {
+  original_text: string;
+  humanized_text: string;
+  changes_made: string[];
+  meaning_preservation_score: number;
+  citations_preserved: boolean;
+}
+
+interface FullAnalysisResult {
+  detection: AIDetectionResult;
+  humanized: HumanizedResult;
+}
+
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'fr', name: 'Français' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'es', name: 'Español' },
+  { code: 'pl', name: 'Polski' },
+  { code: 'tr', name: 'Türkçe' }
+];
+
+// Tree of Thoughts Steps
+interface ThoughtStep {
+  id: number;
+  label: string;
+  description: string;
+  icon: JSX.Element;
+  completed: boolean;
+}
+
+function App() {
+  const [text, setText] = useState('');
+  const [language, setLanguage] = useState('en');
+  const [preserveCitations, setPreserveCitations] = useState(true);
+  const [academicLevel, setAcademicLevel] = useState('university');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<FullAnalysisResult | null>(null);
+  const [error, setError] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [thoughtSteps, setThoughtSteps] = useState<ThoughtStep[]>([
+    {
+      id: 0,
+      label: 'Text Analysis',
+      description: 'Analyzing text structure and patterns...',
+      icon: <Psychology />,
+      completed: false
+    },
+    {
+      id: 1,
+      label: 'AI Detection',
+      description: 'Detecting AI-generated patterns...',
+      icon: <AccountTree />,
+      completed: false
+    },
+    {
+      id: 2,
+      label: 'Thought Generation',
+      description: 'Generating multiple improvement paths...',
+      icon: <LightbulbOutlined />,
+      completed: false
+    },
+    {
+      id: 3,
+      label: 'Best Path Selection',
+      description: 'Selecting optimal humanization strategy...',
+      icon: <TrendingUp />,
+      completed: false
+    },
+    {
+      id: 4,
+      label: 'Text Humanization',
+      description: 'Applying natural language improvements...',
+      icon: <AutoFixHigh />,
+      completed: false
+    }
+  ]);
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+      primary: {
+        main: '#6366f1',
+      },
+      secondary: {
+        main: '#ec4899',
+      },
+      background: {
+        default: darkMode ? '#0f172a' : '#f8fafc',
+        paper: darkMode ? '#1e293b' : '#ffffff',
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      h3: {
+        fontWeight: 800,
+      },
+      h5: {
+        fontWeight: 700,
+      },
+    },
+    shape: {
+      borderRadius: 16,
+    },
+    components: {
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundImage: 'none',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            fontWeight: 600,
+            fontSize: '1rem',
+          },
+        },
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setActiveStep((prev) => {
+          if (prev < thoughtSteps.length - 1) {
+            const newSteps = [...thoughtSteps];
+            newSteps[prev].completed = true;
+            setThoughtSteps(newSteps);
+            return prev + 1;
+          }
+          return prev;
+        });
+      }, 800);
+
+      return () => clearInterval(interval);
+    } else {
+      setActiveStep(0);
+      const resetSteps = [
+        {
+          id: 0,
+          label: 'Text Analysis',
+          description: 'Analyzing text structure and patterns...',
+          icon: <Psychology />,
+          completed: false
+        },
+        {
+          id: 1,
+          label: 'AI Detection',
+          description: 'Detecting AI-generated patterns...',
+          icon: <AccountTree />,
+          completed: false
+        },
+        {
+          id: 2,
+          label: 'Thought Generation',
+          description: 'Generating multiple improvement paths...',
+          icon: <LightbulbOutlined />,
+          completed: false
+        },
+        {
+          id: 3,
+          label: 'Best Path Selection',
+          description: 'Selecting optimal humanization strategy...',
+          icon: <TrendingUp />,
+          completed: false
+        },
+        {
+          id: 4,
+          label: 'Text Humanization',
+          description: 'Applying natural language improvements...',
+          icon: <AutoFixHigh />,
+          completed: false
+        }
+      ];
+      setThoughtSteps(resetSteps);
+    }
+  }, [loading, thoughtSteps.length]);
+
+  const handleAnalyze = async () => {
+    if (!text.trim()) {
+      setError('Please enter some text to analyze');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setResult(null);
+    setActiveStep(0);
+
+    try {
+      const response = await axios.post('/analyze', {
+        text,
+        language,
+        preserve_citations: preserveCitations,
+        academic_level: academicLevel
+      });
+
+      // Complete all steps
+      setThoughtSteps(thoughtSteps.map(step => ({ ...step, completed: true })));
+      setActiveStep(thoughtSteps.length);
+      setResult(response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Analysis failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopyText = () => {
+    if (result?.humanized.humanized_text) {
+      navigator.clipboard.writeText(result.humanized.humanized_text);
+    }
+  };
+
+  const getAIProbabilityText = (probability: number) => {
+    if (probability < 30) return 'Likely Human-Written';
+    if (probability < 70) return 'Possibly AI-Generated';
+    return 'Likely AI-Generated';
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: darkMode
+            ? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          py: 4,
+        }}
+      >
+        <Container maxWidth="xl">
+          {/* Header with Dark Mode Toggle */}
+          <Fade in timeout={800}>
+            <Box>
+              <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Tooltip title={darkMode ? 'Light Mode' : 'Dark Mode'}>
+                  <IconButton
+                    onClick={() => setDarkMode(!darkMode)}
+                    sx={{
+                      bgcolor: 'background.paper',
+                      boxShadow: 3,
+                      '&:hover': { bgcolor: 'background.paper', transform: 'scale(1.1)' },
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    {darkMode ? <Brightness7 /> : <Brightness4 />}
+                  </IconButton>
+                </Tooltip>
+              </Box>
+
+              <Box textAlign="center" mb={6}>
+                <Zoom in timeout={1000}>
+                  <Avatar
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      mx: 'auto',
+                      mb: 2,
+                      bgcolor: 'primary.main',
+                      boxShadow: 6,
+                    }}
+                  >
+                    <School sx={{ fontSize: 50 }} />
+                  </Avatar>
+                </Zoom>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  gutterBottom
+                  sx={{
+                    color: 'white',
+                    fontWeight: 800,
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  AI Academic Humanizer
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: 'rgba(255,255,255,0.9)',
+                    maxWidth: 800,
+                    mx: 'auto',
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  Advanced Tree-of-Thoughts methodology for multilingual AI detection and humanization
+                </Typography>
+              </Box>
+            </Box>
+          </Fade>
+
+          <Grid container spacing={4}>
+            {/* Input Section */}
+            <Grid item xs={12} lg={6}>
+              <Slide direction="right" in timeout={800}>
+                <Paper
+                  elevation={12}
+                  sx={{
+                    p: 4,
+                    backdropFilter: 'blur(20px)',
+                    backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+                    border: '1px solid',
+                    borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                  }}
+                >
+                  <Box display="flex" alignItems="center" mb={3}>
+                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                      <Psychology />
+                    </Avatar>
+                    <Typography variant="h5" fontWeight={700}>
+                      Input Analysis
+                    </Typography>
+                  </Box>
+
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={10}
+                    label="Enter your academic text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Paste your thesis, research paper, or academic content here..."
+                    variant="outlined"
+                    sx={{
+                      mb: 3,
+                      '& .MuiOutlinedInput-root': {
+                        bgcolor: 'background.default',
+                      },
+                    }}
+                  />
+
+                  <Grid container spacing={2} sx={{ mb: 3 }}>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth>
+                        <InputLabel>Language</InputLabel>
+                        <Select
+                          value={language}
+                          onChange={(e) => setLanguage(e.target.value)}
+                          label="Language"
+                        >
+                          {languages.map((lang) => (
+                            <MenuItem key={lang.code} value={lang.code}>
+                              <Language sx={{ mr: 1 }} />
+                              {lang.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth>
+                        <InputLabel>Academic Level</InputLabel>
+                        <Select
+                          value={academicLevel}
+                          onChange={(e) => setAcademicLevel(e.target.value)}
+                          label="Academic Level"
+                        >
+                          <MenuItem value="high_school">🎓 High School</MenuItem>
+                          <MenuItem value="university">🏛️ University</MenuItem>
+                          <MenuItem value="phd">👨‍🎓 PhD/Graduate</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preserveCitations}
+                        onChange={(e) => setPreserveCitations(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <Box display="flex" alignItems="center">
+                        <VerifiedUser sx={{ mr: 1, fontSize: 20 }} />
+                        Preserve Citations & References
+                      </Box>
+                    }
+                    sx={{ mb: 3 }}
+                  />
+
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    onClick={handleAnalyze}
+                    disabled={loading || !text.trim()}
+                    startIcon={loading ? <CircularProgress size={20} /> : <Analytics />}
+                    sx={{
+                      py: 2,
+                      fontSize: '1.1rem',
+                      boxShadow: 6,
+                      background: 'linear-gradient(45deg, #667eea 30%, #764ba2 90%)',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: 12,
+                      },
+                      transition: 'all 0.3s',
+                    }}
+                  >
+                    {loading ? 'Processing with AI...' : '🚀 Analyze & Humanize'}
+                  </Button>
+
+                  {error && (
+                    <Fade in>
+                      <Alert severity="error" sx={{ mt: 2 }}>
+                        {error}
+                      </Alert>
+                    </Fade>
+                  )}
+
+                  {/* Character Count */}
+                  <Box mt={2} textAlign="right">
+                    <Typography variant="caption" color="text.secondary">
+                      {text.length} characters • {text.split(/\s+/).filter(Boolean).length} words
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Slide>
+            </Grid>
+
+            {/* Results Section */}
+            <Grid item xs={12} lg={6}>
+              <Slide direction="left" in timeout={800}>
+                <Box>
+                  {/* Tree of Thoughts Process Visualization */}
+                  {loading && (
+                    <Fade in>
+                      <Paper
+                        elevation={12}
+                        sx={{
+                          p: 4,
+                          mb: 3,
+                          backdropFilter: 'blur(20px)',
+                          backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+                          border: '1px solid',
+                          borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                        }}
+                      >
+                        <Box display="flex" alignItems="center" mb={3}>
+                          <Avatar sx={{ bgcolor: 'secondary.main', mr: 2 }}>
+                            <AccountTree />
+                          </Avatar>
+                          <Typography variant="h5" fontWeight={700}>
+                            Tree of Thoughts Process
+                          </Typography>
+                        </Box>
+
+                        <Stepper activeStep={activeStep} orientation="vertical">
+                          {thoughtSteps.map((step) => (
+                            <Step key={step.id} completed={step.completed}>
+                              <StepLabel
+                                icon={
+                                  step.completed ? (
+                                    <CheckCircle color="success" />
+                                  ) : (
+                                    <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                                      {step.icon}
+                                    </Avatar>
+                                  )
+                                }
+                              >
+                                <Typography variant="subtitle1" fontWeight={600}>
+                                  {step.label}
+                                </Typography>
+                              </StepLabel>
+                              <StepContent>
+                                <Typography variant="body2" color="text.secondary">
+                                  {step.description}
+                                </Typography>
+                              </StepContent>
+                            </Step>
+                          ))}
+                        </Stepper>
+                      </Paper>
+                    </Fade>
+                  )}
+
+                  {/* Results Display */}
+                  {result && (
+                    <Zoom in timeout={800}>
+                      <Paper
+                        elevation={12}
+                        sx={{
+                          p: 4,
+                          backdropFilter: 'blur(20px)',
+                          backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+                          border: '1px solid',
+                          borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                        }}
+                      >
+                        <Box display="flex" alignItems="center" mb={3}>
+                          <Avatar sx={{ bgcolor: 'success.main', mr: 2 }}>
+                            <AutoFixHigh />
+                          </Avatar>
+                          <Typography variant="h5" fontWeight={700}>
+                            Analysis Results
+                          </Typography>
+                        </Box>
+
+                        {/* AI Detection Card */}
+                        <Card
+                          sx={{
+                            mb: 3,
+                            background: `linear-gradient(135deg, ${
+                              result.detection.ai_probability < 30
+                                ? '#10b981'
+                                : result.detection.ai_probability < 70
+                                ? '#f59e0b'
+                                : '#ef4444'
+                            } 0%, rgba(0,0,0,0.1) 100%)`,
+                            color: 'white',
+                          }}
+                        >
+                          <CardContent>
+                            <Box display="flex" alignItems="center" mb={2}>
+                              <SpeedOutlined sx={{ fontSize: 40, mr: 2 }} />
+                              <Box flexGrow={1}>
+                                <Typography variant="h6" fontWeight={700}>
+                                  AI Detection Score
+                                </Typography>
+                                <Typography variant="h3" fontWeight={800}>
+                                  {result.detection.ai_probability.toFixed(1)}%
+                                </Typography>
+                              </Box>
+                            </Box>
+
+                            <Divider sx={{ my: 2, bgcolor: 'rgba(255,255,255,0.3)' }} />
+
+                            <Box display="flex" alignItems="center" mb={1}>
+                              <Badge
+                                badgeContent={`${result.detection.confidence.toFixed(0)}%`}
+                                color="info"
+                                sx={{ mr: 2 }}
+                              >
+                                <Timeline />
+                              </Badge>
+                              <Typography variant="body2">
+                                {getAIProbabilityText(result.detection.ai_probability)}
+                              </Typography>
+                            </Box>
+
+                            <Typography variant="body2" sx={{ mt: 2, opacity: 0.9 }}>
+                              {result.detection.analysis}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+
+                        {/* Humanized Text Card */}
+                        <Card sx={{ mb: 2 }}>
+                          <CardContent>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                              <Typography variant="h6" fontWeight={700}>
+                                ✨ Humanized Text
+                              </Typography>
+                              <Tooltip title="Copy to clipboard">
+                                <IconButton onClick={handleCopyText} size="small" color="primary">
+                                  <ContentCopy />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+
+                            <TextField
+                              fullWidth
+                              multiline
+                              rows={8}
+                              value={result.humanized.humanized_text}
+                              variant="outlined"
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                              sx={{
+                                mb: 2,
+                                '& .MuiOutlinedInput-root': {
+                                  bgcolor: 'background.default',
+                                },
+                              }}
+                            />
+
+                            <Divider sx={{ my: 2 }} />
+
+                            <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+                              📝 Changes Applied:
+                            </Typography>
+                            <Box mb={2}>
+                              {result.humanized.changes_made.map((change, index) => (
+                                <Chip
+                                  key={index}
+                                  label={change}
+                                  size="small"
+                                  color="primary"
+                                  variant="outlined"
+                                  sx={{ mr: 1, mb: 1 }}
+                                />
+                              ))}
+                            </Box>
+
+                            <Grid container spacing={2}>
+                              <Grid item xs={6}>
+                                <Box
+                                  sx={{
+                                    p: 2,
+                                    bgcolor: 'success.main',
+                                    color: 'white',
+                                    borderRadius: 2,
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  <Typography variant="caption">Meaning Preserved</Typography>
+                                  <Typography variant="h6" fontWeight={700}>
+                                    {result.humanized.meaning_preservation_score.toFixed(1)}%
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Box
+                                  sx={{
+                                    p: 2,
+                                    bgcolor: result.humanized.citations_preserved ? 'success.main' : 'error.main',
+                                    color: 'white',
+                                    borderRadius: 2,
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  <Typography variant="caption">Citations</Typography>
+                                  <Typography variant="h6" fontWeight={700}>
+                                    {result.humanized.citations_preserved ? '✓ Preserved' : '✗ Modified'}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          startIcon={<Download />}
+                          sx={{ mt: 2 }}
+                          onClick={() => {
+                            const blob = new Blob([result.humanized.humanized_text], {
+                              type: 'text/plain',
+                            });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'humanized-text.txt';
+                            a.click();
+                          }}
+                        >
+                          Download Humanized Text
+                        </Button>
+                      </Paper>
+                    </Zoom>
+                  )}
+
+                  {/* Placeholder */}
+                  {!result && !loading && (
+                    <Fade in>
+                      <Paper
+                        elevation={12}
+                        sx={{
+                          p: 6,
+                          textAlign: 'center',
+                          backdropFilter: 'blur(20px)',
+                          backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+                          border: '1px solid',
+                          borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                        }}
+                      >
+                        <AccountTree sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+                        <Typography variant="h5" color="text.secondary" gutterBottom>
+                          Ready to Analyze
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                          Enter your academic text and click "Analyze & Humanize" to see the Tree of Thoughts in
+                          action
+                        </Typography>
+                      </Paper>
+                    </Fade>
+                  )}
+                </Box>
+              </Slide>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+    </ThemeProvider>
+  );
+}
+
+export default App;
