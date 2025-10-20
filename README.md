@@ -38,13 +38,6 @@ npm install
 npm start
 ```
 
-## Environment Variables
-```
-GEMINI_API_KEY=your_gemini_api_key
-DATABASE_URL=postgresql://user:pass@localhost/db
-REDIS_URL=redis://localhost:6379
-```
-
 ## API Endpoints
 - `POST /detect` - AI detection analysis
 - `POST /humanize` - Text humanization
