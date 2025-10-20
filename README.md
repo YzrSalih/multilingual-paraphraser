@@ -1,4 +1,6 @@
 # Multilingual Academic AI Detection & Humanizer
+<img width="1669" height="893" alt="image" src="https://github.com/user-attachments/assets/9992877d-f218-4735-81fa-e7f83ffaeb76" />
+
 
 ## Overview
 Academic writing tool for detecting AI-generated content and humanizing text while preserving meaning and citations across multiple languages.
