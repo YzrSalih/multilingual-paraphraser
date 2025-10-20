@@ -32,7 +32,7 @@ const Premium: React.FC = () => {
           <WorkspacePremiumOutlined sx={{ fontSize: 60 }} />
         </Avatar>
         <Typography variant="h3" fontWeight={800} gutterBottom>
-          AcademAI Pro
+          Cowrite Pro
         </Typography>
         <Typography variant="h6" color="text.secondary">
           Unlock unlimited potential with our professional features

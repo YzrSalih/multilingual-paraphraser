@@ -9,7 +9,6 @@ import {
   Box,
   Typography,
   Divider,
-  Avatar,
 } from '@mui/material';
 import {
   EditNote,
@@ -24,7 +23,6 @@ import {
   BookmarkBorderOutlined,
   AutoGraphOutlined,
   WorkspacePremiumOutlined,
-  AutoAwesome,
 } from '@mui/icons-material';
 
 interface SidebarProps {
@@ -122,56 +120,56 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange, darkMode }
           boxSizing: 'border-box',
           bgcolor: darkMode ? '#1e293b' : '#ffffff',
           borderRight: '1px solid',
-          borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
-          boxShadow: '4px 0 10px rgba(0,0,0,0.1)',
+          borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+          boxShadow: 'none',
         },
       }}
     >
-      {/* Logo */}
+      {/* Brand header */}
       <Box
+        onClick={() => onPageChange('home')}
         sx={{
           p: 2,
+          py: 0,
+          minHeight: 64,
           display: 'flex',
           alignItems: 'center',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          gap: -5, // tighter spacing between logo and text
+          cursor: 'pointer',
+          borderBottom: '1px solid',
+          borderColor: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
         }}
       >
-        <Avatar
-          sx={{
-            bgcolor: 'rgba(255,255,255,0.2)',
-            color: 'white',
-            width: 40,
-            height: 40,
-            mr: 1,
-            backdropFilter: 'blur(10px)',
-          }}
-        >
-          <AutoAwesome />
-        </Avatar>
-        <Typography variant="h6" fontWeight={700}>
-          AcademAI
+        <Box
+          component="img"
+          src="/images/logo-academic-ai.png"
+          alt="CoWrite"
+          sx={{ width: 52, height: 52, borderRadius: 1, flexShrink: 0 }}
+        />
+        <Typography variant="subtitle1" fontWeight={800}>
+          CoWrite
         </Typography>
       </Box>
 
       {/* Menu Items */}
-      <List sx={{ pt: 2, px: 1 }}>
+      <List sx={{ pt: 1.5, px: 1 }}>
         {menuItems.map((item) => (
-          <ListItem key={item.id} disablePadding sx={{ mb: 0.5 }}>              <ListItemButton
+          <ListItem key={item.id} disablePadding sx={{ mb: 0.5 }}>
+            <ListItemButton
               selected={currentPage === item.id}
               onClick={() => onPageChange(item.id)}
               sx={{
                 borderRadius: 2,
                 '&.Mui-selected': {
-                  bgcolor: darkMode ? 'rgba(102, 126, 234, 0.2)' : 'rgba(102, 126, 234, 0.1)',
+                  bgcolor: darkMode ? 'rgba(102, 126, 234, 0.2)' : 'rgba(102, 126, 234, 0.08)',
                   borderLeft: '3px solid',
                   borderColor: item.color,
                   '&:hover': {
-                    bgcolor: darkMode ? 'rgba(102, 126, 234, 0.3)' : 'rgba(102, 126, 234, 0.15)',
+                    bgcolor: darkMode ? 'rgba(102, 126, 234, 0.28)' : 'rgba(102, 126, 234, 0.12)',
                   },
                 },
                 '&:hover': {
-                  bgcolor: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                  bgcolor: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
                 },
               }}
             >
@@ -214,7 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange, darkMode }
         >
           <WorkspacePremiumOutlined sx={{ fontSize: 40, mb: 1 }} />
           <Typography variant="body2" fontWeight={700} textAlign="center">
-            AcademAI
+            Cowrite
             <br />
             Pro
           </Typography>

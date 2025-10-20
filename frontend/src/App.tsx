@@ -6,6 +6,7 @@ import {
   CssBaseline,
 } from '@mui/material';
 import Sidebar from './components/Sidebar';
+import Home from './pages/Home';
 import AIHumanizer from './pages/AIHumanizer';
 import GrammarChecker from './pages/GrammarChecker';
 import PlagiarismChecker from './pages/PlagiarismChecker';
@@ -15,11 +16,29 @@ import Summarizer from './pages/Summarizer';
 import Translator from './pages/Translator';
 import CitationGenerator from './pages/CitationGenerator';
 import Premium from './pages/Premium';
+import Navbar from './components/Navbar';
 import './App.css';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('humanizer');
+  const [currentPage, setCurrentPage] = useState('home');
   const [darkMode, setDarkMode] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // migrate old key if present
+    const legacy = localStorage.getItem('academai.userName');
+    if (legacy && !localStorage.getItem('cowrite.userName')) {
+      localStorage.setItem('cowrite.userName', legacy);
+      localStorage.removeItem('academai.userName');
+    }
+    const stored = localStorage.getItem('cowrite.userName');
+    if (stored) setUserName(stored);
+  }, []);
+
+  useEffect(() => {
+    if (userName) localStorage.setItem('cowrite.userName', userName);
+    else localStorage.removeItem('cowrite.userName');
+  }, [userName]);
 
   const theme = createTheme({
     palette: {
@@ -86,6 +105,8 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'home':
+        return <Home onNavigate={setCurrentPage} userName={userName || undefined} />;
       case 'paraphraser':
       case 'humanizer':
       case 'ai-detector':
@@ -109,7 +130,7 @@ function App() {
       case 'premium':
         return <Premium />;
       default:
-        return <AIHumanizer darkMode={darkMode} setDarkMode={setDarkMode} />;
+        return <Home onNavigate={setCurrentPage} userName={userName || undefined} />;
     }
   };
 
@@ -118,11 +139,21 @@ function App() {
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} darkMode={darkMode} />
+        {/* Top Navbar */}
+        <Navbar
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          darkMode={darkMode}
+          userName={userName}
+          onSignIn={(name) => setUserName(name)}
+          onSignOut={() => setUserName(null)}
+        />
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            p: 4,
+            p: currentPage === 'home' ? 0 : 4,
+            pt: 8, // offset for fixed navbar height
             ml: '200px',
             bgcolor: 'background.default',
           }}
